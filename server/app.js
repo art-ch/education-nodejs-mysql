@@ -22,18 +22,48 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 // create
-// app.post('/insert', (req, res) => {});
+app.post('/insert', (req, res) => {
+    const { name } = req.body;
+    const db = dbService.getDbServiceInstance();
+    const result = db.insertNewName(name);
+    result
+        .then((data) => res.json({ data }))
+        .catch((err) => console.log(err));
+});
 // read
 app.get('/getAll', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const db = dbService.getDbServiceInstance();
     const result = db.getAllData();
     result
         .then((data) => res.json({ data }))
-        .then((err) => console.log(err));
+        .catch((err) => console.log(err));
 }));
 // update
-// app.post('/insert', (req, res) => {});
+app.patch('/update', (req, res) => {
+    const { id, name } = req.body;
+    const db = dbService.getDbServiceInstance();
+    const result = db.updateRowByID(id, name);
+    result
+        .then((data) => res.json({ success: data }))
+        .catch((err) => console.log(err));
+});
 // delete
-// app.post('/insert', (req, res) => {});
+app.delete('/delete/:id', (req, res) => {
+    const { id } = req.params;
+    const db = dbService.getDbServiceInstance();
+    const result = db.deleteRowByID(id);
+    result
+        .then((data) => res.json({ success: data }))
+        .catch((err) => console.log(err));
+});
+// search
+app.get('/search/:name', (req, res) => {
+    const { name } = req.params;
+    const db = dbService.getDbServiceInstance();
+    const result = db.searchByName(name);
+    result
+        .then((data) => res.json({ data }))
+        .catch((err) => console.log(err));
+});
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server is listening on port ${port}`));

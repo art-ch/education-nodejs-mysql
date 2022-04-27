@@ -12,7 +12,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // create
-// app.post('/insert', (req, res) => {});
+app.post('/insert', (req, res) => {
+  const { name } = req.body;
+
+  const db = dbService.getDbServiceInstance();
+
+  const result = db.insertNewName(name);
+
+  result
+    .then((data: any) => res.json({ data }))
+    .catch((err: any) => console.log(err));
+});
 
 // read
 app.get('/getAll', async (req, res) => {
@@ -22,14 +32,44 @@ app.get('/getAll', async (req, res) => {
 
   result
     .then((data: any) => res.json({ data }))
-    .then((err: any) => console.log(err));
+    .catch((err: any) => console.log(err));
 });
 
 // update
-// app.post('/insert', (req, res) => {});
+app.patch('/update', (req, res) => {
+  const { id, name } = req.body;
+  const db = dbService.getDbServiceInstance();
+
+  const result = db.updateRowByID(id, name);
+
+  result
+    .then((data: any) => res.json({ success: data }))
+    .catch((err: any) => console.log(err));
+});
 
 // delete
-// app.post('/insert', (req, res) => {});
+app.delete('/delete/:id', (req, res) => {
+  const { id } = req.params;
+  const db = dbService.getDbServiceInstance();
+
+  const result = db.deleteRowByID(id);
+
+  result
+    .then((data: any) => res.json({ success: data }))
+    .catch((err: any) => console.log(err));
+});
+
+// search
+app.get('/search/:name', (req, res) => {
+  const { name } = req.params;
+  const db = dbService.getDbServiceInstance();
+
+  const result = db.searchByName(name);
+
+  result
+    .then((data: any) => res.json({ data }))
+    .catch((err: any) => console.log(err));
+});
 
 const port = process.env.PORT;
 app.listen(port, () => console.log(`Server is listening on port ${port}`));
